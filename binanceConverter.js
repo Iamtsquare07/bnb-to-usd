@@ -1,11 +1,13 @@
+const coinName = "binancecoin"
 async function queryApi() {
   try {
     const response = await axios.get(
       "https://api.coingecko.com/api/v3/simple/price",
       {
         params: {
-          ids: "binancecoin",
+          ids: coinName,
           vs_currencies: "usd",
+          
         },
       }
     );
@@ -19,7 +21,7 @@ async function queryApi() {
 async function convertCryptoToDollars(value) {
   try {
     const response = await queryApi();
-    const cryptoToUsdRate = response.data.binancecoin.usd;
+    const cryptoToUsdRate = response.data[coinName].usd;
 
     const dollarsValue = value * cryptoToUsdRate;
 
@@ -33,7 +35,7 @@ async function convertCryptoToDollars(value) {
 async function convertDollarsToCrypto(value) {
   try {
     const response = await queryApi();
-    const cryptoToUsdRate = response.data.binancecoin.usd;
+    const cryptoToUsdRate = response.data[coinName].usd;
 
     const cryptoValue = value / cryptoToUsdRate;
 
@@ -71,7 +73,7 @@ function handleCryptoInput() {
     convertCryptoToDollars(cryptoValue).then((dollar) => {
       dollars.value = dollar.toFixed(2);
     });
-  }, 700); 
+  }, 500); 
 }
 
 function handleDollarsInput() {
@@ -83,10 +85,10 @@ function handleDollarsInput() {
       dollars.focus();
       return;
     }
-    convertDollarsToCrypto(dollarsValue).then((binance) => {
-      crypto.value = binance.toFixed(4);
+    convertDollarsToCrypto(dollarsValue).then((coin) => {
+      crypto.value = coin.toFixed(4);
     });
-  }, 700);
+  }, 500);
 }
 
 crypto.addEventListener("input", handleCryptoInput);
@@ -99,9 +101,10 @@ document.getElementById("convert-button").addEventListener("click", () => {
   } else if (dollars.value) {
     convertUsdToCrypto();
   } else {
-    alert("Enter Binance or Dollars to convert");
+    alert("Enter BNB or Dollars to convert");
   }
 });
+
 
 function isMobileDevice() {
   return window.innerWidth < 768;
@@ -132,4 +135,6 @@ if (isMobileDevice()) {
   arrows.innerHTML = `<i class="fa-solid fa-arrow-right-arrow-left"></i>`;
 }
 
+const now = new Date();
 
+document.getElementById("currentyear").textContent = now.getFullYear();
